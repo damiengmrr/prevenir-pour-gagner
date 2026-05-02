@@ -100,6 +100,8 @@
         <a href="actions.html">Les actions</a>
         <a href="galerie.html">La galerie</a>
         <a href="contact.html">Le contact</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+        <a href="politique-confidentialite.html">Confidentialité</a>
       </div>
     </div>
   </div>
@@ -154,6 +156,19 @@
         Message
         <textarea id="requestMessage" rows="5" placeholder="Expliquez rapidement le public concerné, la période souhaitée et le type d’intervention attendu." required></textarea>
       </label>
+
+      <label class="privacy-consent">
+        <input type="checkbox" id="privacyConsent" required>
+        <span>
+          J’accepte que mes données soient utilisées uniquement pour être recontacté dans le cadre de ma demande.
+        </span>
+      </label>
+
+      <p class="privacy-notice">
+        Les informations envoyées via ce formulaire sont transmises à l’association Prévenir pour Gagner afin de répondre à votre demande.
+        Elles ne sont ni vendues, ni utilisées à des fins commerciales.
+        <a href="politique-confidentialite.html">Voir la politique de confidentialité</a>.
+      </p>
 
       <button class="btn primary" type="submit">Envoyer la demande</button>
       <p class="form-help">Votre message sera transmis directement à l’association.</p>
@@ -261,6 +276,47 @@
     color: var(--muted);
     font-size: 0.88rem;
   }
+
+  .privacy-consent {
+    display: flex !important;
+    grid-template-columns: none !important;
+    align-items: flex-start;
+    gap: 10px !important;
+    margin-top: 4px;
+    padding: 12px 14px;
+    border: 1px solid rgba(19, 41, 75, 0.12);
+    border-radius: 16px;
+    background: rgba(19, 41, 75, 0.04);
+    color: var(--navy);
+    font-size: 0.86rem !important;
+    font-weight: 700 !important;
+    line-height: 1.45;
+  }
+
+  .privacy-consent input {
+    width: 18px !important;
+    min-width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--accent);
+  }
+
+  .privacy-notice {
+    margin: -2px 0 4px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .privacy-notice a {
+    color: var(--accent);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .privacy-notice a:hover {
+    text-decoration: underline;
+  }
   .caption-text {
     margin: 10px 0 16px;
     color: #000000;
@@ -323,6 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('requestEmail').value.trim();
       const phone = document.getElementById('requestPhone').value.trim();
       const message = document.getElementById('requestMessage').value.trim();
+      const privacyConsent = document.getElementById('privacyConsent').checked;
+
+      if (!privacyConsent) {
+        alert('Merci d’accepter l’utilisation de vos données pour envoyer la demande.');
+        return;
+      }
 
       try {
         const response = await fetch('https://formspree.io/f/xeenowwd', {
@@ -335,7 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
             nom_structure: name,
             email: email,
             telephone: phone,
-            message: message
+            message: message,
+            consentement_rgpd: privacyConsent ? 'oui' : 'non',
+            finalite: 'Réponse à une demande envoyée depuis le formulaire de contact du site Prévenir pour Gagner'
           })
         });
 
