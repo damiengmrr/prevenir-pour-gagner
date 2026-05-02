@@ -50,8 +50,13 @@
 
     <div class="panel image-panel" data-reveal>
       <div class="image-caption">
-        <strong>Demande d’intervention</strong><br>
-        Le site peut accueillir ici une photo de terrain, une prise de parole ou un moment d’échange pour renforcer la dimension humaine du projet.
+        <strong>Envie d'échanger</strong>
+        <p class="caption-text">
+          Une idée ? Une question ? Nous sommes à votre écoute 
+        </p>
+        <button class="btn primary intervention-open" id="interventionOpen" type="button">
+          Échanger avec nous
+        </button>
       </div>
     </div>
   </div>
@@ -119,7 +124,229 @@
     </div>
   </div>
 </div>
+<div class="intervention-modal" id="interventionModal" aria-hidden="true">
+  <div class="intervention-modal-card">
+    <div class="intervention-modal-head">
+      <div>
+        <div class="eyebrow">Contact</div>
+        <h3>Envoyer une demande</h3>
+      </div>
+      <button class="intervention-close" id="interventionClose" type="button" aria-label="Fermer">✕</button>
+    </div>
 
+    <form class="intervention-form" id="interventionForm">
+      <label>
+        Nom / structure
+        <input type="text" id="requestName" placeholder="Ex : Collège, club, association..." required>
+      </label>
+
+      <label>
+        Adresse mail
+        <input type="email" id="requestEmail" placeholder="votre@email.com" required>
+      </label>
+
+      <label>
+        Téléphone
+        <input type="tel" id="requestPhone" placeholder="06 00 00 00 00">
+      </label>
+
+      <label>
+        Message
+        <textarea id="requestMessage" rows="5" placeholder="Expliquez rapidement le public concerné, la période souhaitée et le type d’intervention attendu." required></textarea>
+      </label>
+
+      <button class="btn primary" type="submit">Envoyer la demande</button>
+      <p class="form-help">Votre demande sera envoyée directement à l’association.</p>
+    </form>
+  </div>
+</div>
+
+<style>
+  .intervention-open {
+    margin-top: 18px;
+    cursor: pointer;
+  }
+
+  .intervention-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: rgba(19, 41, 75, 0.62);
+    backdrop-filter: blur(10px);
+  }
+
+  .intervention-modal.active {
+    display: flex !important;
+  }
+
+  .intervention-modal-card {
+    width: min(560px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 26px;
+    padding: 28px;
+    background: #ffffff;
+    box-shadow: 0 28px 80px rgba(19, 41, 75, 0.28);
+    transform: translateY(8px) scale(0.98);
+    animation: interventionIn 0.22s ease forwards;
+  }
+
+  @keyframes interventionIn {
+    to {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .intervention-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .intervention-modal-head h3 {
+    margin: 6px 0 0;
+    color: var(--navy);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .intervention-close {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 999px;
+    color: var(--navy);
+    background: rgba(19, 41, 75, 0.08);
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+
+  .intervention-form {
+    display: grid;
+    gap: 14px;
+  }
+
+  .intervention-form label {
+    display: grid;
+    gap: 7px;
+    color: var(--navy);
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+
+  .intervention-form input,
+  .intervention-form textarea {
+    width: 100%;
+    border: 1px solid rgba(19, 41, 75, 0.14);
+    border-radius: 16px;
+    padding: 13px 14px;
+    font: inherit;
+    color: var(--navy);
+    background: rgba(255, 255, 255, 0.9);
+    outline: none;
+  }
+
+  .intervention-form textarea {
+    min-height: 130px;
+    resize: vertical;
+  }
+
+  .form-help {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .caption-text {
+    margin: 10px 0 16px;
+    color: #000000;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 320px;
+  }
+
+  .image-caption strong {
+    display: block;
+    color: #000000;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const interventionOpen = document.getElementById('interventionOpen');
+  const interventionModal = document.getElementById('interventionModal');
+  const interventionClose = document.getElementById('interventionClose');
+  const interventionForm = document.getElementById('interventionForm');
+
+  function openInterventionModal() {
+    interventionModal.classList.add('active');
+    interventionModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeInterventionModal() {
+    interventionModal.classList.remove('active');
+    interventionModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  if (interventionOpen && interventionModal) {
+    interventionOpen.addEventListener('click', openInterventionModal);
+  }
+
+  if (interventionClose && interventionModal) {
+    interventionClose.addEventListener('click', closeInterventionModal);
+  }
+
+  if (interventionModal) {
+    interventionModal.addEventListener('click', (event) => {
+      if (event.target === interventionModal) closeInterventionModal();
+    });
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && interventionModal.classList.contains('active')) {
+      closeInterventionModal();
+    }
+  });
+
+  if (interventionForm) {
+    interventionForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById('requestName').value.trim();
+      const email = document.getElementById('requestEmail').value.trim();
+      const phone = document.getElementById('requestPhone').value.trim();
+      const message = document.getElementById('requestMessage').value.trim();
+
+      try {
+        const response = await fetch('/api/send-intervention.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, email, phone, message })
+        });
+
+        if (response.ok) {
+          alert('Demande envoyée ✅');
+          interventionForm.reset();
+          closeInterventionModal();
+        } else {
+          alert("Erreur lors de l'envoi ❌");
+        }
+      } catch (err) {
+        alert("Erreur réseau ❌");
+      }
+    });
+  }
+});
+</script>
 <script src="script.js"></script>
 </body>
 </html>
